@@ -1,50 +1,29 @@
 import Contact from "../Model/Contact.js";
 
-async function listContacts() {
+function listContacts() {
   return Contact.find();
 }
 
 async function getContactById(contactId) {
-  const contacts = await listContacts();
-  const result = contacts.find((item) => item.id === contactId);
-  return result || null;
-}
-
-async function removeContact(contactId) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === contactId);
-  if (index === -1) {
-    return null;
-  }
-
-  const [result] = contacts.splice(index, 1);
-  await updateContacts(contacts);
+  const result = await Contact.findById(contactId);
 
   return result;
 }
 
-async function addContact(data) {
-  const contacts = await listContacts();
-  const newContact = {
-    id: nanoid(),
-    ...data,
-  };
-  contacts.push(newContact);
-  await updateContacts(contacts);
-  return newContact;
+function removeContact(contactId) {
+  return Contact.findByIdAndDelete(contactId);
 }
 
-async function updateContactById(contactId, data) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === contactId);
-  if (index === -1) {
-    return null;
-  }
+function addContact(data) {
+  return Contact.create(data);
+}
 
-  contacts[index] = { ...contacts[index], ...data };
-  await updateContacts(contacts);
+function updateContactById(contactId, data) {
+  return Contact.findByIdAndUpdate(contactId, data);
+}
 
-  return contacts[index];
+function updateStatusContact(contactId, body) {
+  return Contact.findByIdAndUpdate(contactId, body);
 }
 
 export {
@@ -53,4 +32,5 @@ export {
   addContact,
   removeContact,
   updateContactById,
+  updateStatusContact,
 };
