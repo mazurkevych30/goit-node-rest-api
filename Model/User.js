@@ -31,6 +31,6 @@ userSchema.post("save", handlerSaveError);
 userSchema.pre("findOneAndUpdate", setUpdateSettings);
 userSchema.post("findOneAndUpdate", handlerSaveError);
 
-const User = model("contact", userSchema);
+const User = model("user", userSchema);
 
 export default User;
