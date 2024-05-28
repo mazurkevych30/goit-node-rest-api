@@ -15,4 +15,11 @@ authRouter.post(
   authControllers.singup
 );
 
+authRouter.post(
+  "/login",
+  isEmptyBody,
+  validateBody(authSigninSchema),
+  authControllers.singin
+);
+
 export default authRouter;

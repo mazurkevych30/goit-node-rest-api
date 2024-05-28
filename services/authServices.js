@@ -1,4 +1,4 @@
-import bcrupt from "bcrypt";
+import bcrypt from "bcrypt";
 
 import User from "../Model/User.js";
 
@@ -7,7 +7,7 @@ function findUser(filter) {
 }
 
 async function addUser(data) {
-  const hashPassword = await bcrupt.hash(data.password, 10);
+  const hashPassword = await bcrypt.hash(data.password, 10);
   return User.create({ ...data, password: hashPassword });
 }
 
