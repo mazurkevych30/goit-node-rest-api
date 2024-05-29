@@ -4,6 +4,7 @@ import { createToken } from "../helpers/jwt.js";
 import * as authServises from "../services/authServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
+import { token } from "morgan";
 
 const singup = async (req, res) => {
   const { email } = req.body;
@@ -37,6 +38,7 @@ const singin = async (req, res) => {
   const payload = { id };
 
   const token = createToken(payload);
+  await authServises.updateUser({ _id: id }, { token });
 
   res.json({
     token,
@@ -47,7 +49,25 @@ const singin = async (req, res) => {
   });
 };
 
+const getCurrent = (req, res) => {
+  const { email, subscription } = req.user;
+
+  res.json({
+    email,
+    subscription,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await authServises.updateUser({ _id }, { token: "" });
+
+  res.status(204).json();
+};
+
 export default {
   singup: ctrlWrapper(singup),
   singin: ctrlWrapper(singin),
+  getCurrent: ctrlWrapper(getCurrent),
+  logout: ctrlWrapper(logout),
 };

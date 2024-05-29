@@ -1,9 +1,17 @@
 import Contact from "../Model/Contact.js";
 
 function listContacts(search = {}) {
-  const { filter = {} } = search;
-  return Contact.find(filter);
+  const { filter = {}, fields = "", settings = {} } = search;
+  return Contact.find(filter, fields, settings).populate(
+    "owner",
+    "email subscription"
+  );
 }
+
+function countContacts(filter) {
+  return Contact.countDocuments(filter);
+}
+
 function getContact(filter) {
   return Contact.findOne(filter);
 }
@@ -26,6 +34,7 @@ function updateStatusContact(filter, body) {
 
 export {
   listContacts,
+  countContacts,
   getContact,
   addContact,
   removeContact,

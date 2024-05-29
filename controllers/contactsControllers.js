@@ -4,12 +4,23 @@ import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
-
   const filter = { owner };
+  const fields = "-createdAt -updatedAt";
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+  const settings = { skip, limit };
 
-  const result = await contactsService.listContacts({ filter });
+  const result = await contactsService.listContacts({
+    filter,
+    fields,
+    settings,
+  });
+  const total = await contactsService.countContacts(filter);
 
-  res.json(result);
+  res.json({
+    total,
+    result,
+  });
 };
 
 const getOneContact = async (req, res) => {

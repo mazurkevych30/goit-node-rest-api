@@ -11,4 +11,8 @@ async function addUser(data) {
   return User.create({ ...data, password: hashPassword });
 }
 
-export { addUser, findUser };
+function updateUser(filter, data) {
+  return User.findOneAndUpdate(filter, data);
+}
+
+export { addUser, findUser, updateUser };
