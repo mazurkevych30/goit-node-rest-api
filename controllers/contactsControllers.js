@@ -3,14 +3,20 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await contactsService.listContacts();
+  const { _id: owner } = req.user;
+
+  const filter = { owner };
+
+  const result = await contactsService.listContacts({ filter });
 
   res.json(result);
 };
 
 const getOneContact = async (req, res) => {
-  const { id } = req.params;
-  const result = await contactsService.getContactById(id);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+
+  const result = await contactsService.getContact({ _id, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -19,8 +25,10 @@ const getOneContact = async (req, res) => {
 };
 
 const deleteContact = async (req, res) => {
-  const { id } = req.params;
-  const result = await contactsService.removeContact(id);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+
+  const result = await contactsService.removeContact({ _id, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -29,14 +37,17 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const result = await contactsService.addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await contactsService.addContact({ ...req.body, owner });
 
   res.status(201).json(result);
 };
 
 const updateContact = async (req, res) => {
-  const { id } = req.params;
-  const result = await contactsService.updateContactById(id, req.body);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+
+  const result = await contactsService.updateContact({ _id, owner }, req.body);
   if (!result) {
     throw HttpError(404);
   }
@@ -45,8 +56,13 @@ const updateContact = async (req, res) => {
 };
 
 const updateStatusContact = async (req, res) => {
-  const { id } = req.params;
-  const result = await contactsService.updateStatusContact(id, req.body);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+
+  const result = await contactsService.updateStatusContact(
+    { _id, owner },
+    req.body
+  );
   if (!result) {
     throw HttpError(404);
   }

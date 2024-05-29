@@ -1,36 +1,34 @@
 import Contact from "../Model/Contact.js";
 
-function listContacts() {
-  return Contact.find();
+function listContacts(search = {}) {
+  const { filter = {} } = search;
+  return Contact.find(filter);
+}
+function getContact(filter) {
+  return Contact.findOne(filter);
 }
 
-async function getContactById(contactId) {
-  const result = await Contact.findById(contactId);
-
-  return result;
-}
-
-function removeContact(contactId) {
-  return Contact.findByIdAndDelete(contactId);
+function removeContact(filter) {
+  return Contact.findOneAndDelete(filter);
 }
 
 function addContact(data) {
   return Contact.create(data);
 }
 
-function updateContactById(contactId, data) {
-  return Contact.findByIdAndUpdate(contactId, data);
+function updateContact(filter, data) {
+  return Contact.findOneAndUpdate(filter, data);
 }
 
-function updateStatusContact(contactId, body) {
-  return Contact.findByIdAndUpdate(contactId, body);
+function updateStatusContact(filter, body) {
+  return Contact.findOneAndUpdate(filter, body);
 }
 
 export {
   listContacts,
-  getContactById,
+  getContact,
   addContact,
   removeContact,
-  updateContactById,
+  updateContact,
   updateStatusContact,
 };
