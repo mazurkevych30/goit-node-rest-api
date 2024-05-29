@@ -6,7 +6,11 @@ import validateBody from "../decorators/validateBody.js";
 import isEmptyBody from "../middlewares/isEmptyBody.js";
 import authenticate from "../middlewares/authenticate.js";
 
-import { authSignupSchema, authSigninSchema } from "../schemas/authSchemas.js";
+import {
+  authSignupSchema,
+  authSigninSchema,
+  updateMembershipSchema,
+} from "../schemas/authSchemas.js";
 
 const authRouter = express.Router();
 
@@ -27,5 +31,13 @@ authRouter.post(
 authRouter.get("/current", authenticate, authControllers.getCurrent);
 
 authRouter.post("/logout", authenticate, authControllers.logout);
+
+authRouter.patch(
+  "/",
+  authenticate,
+  isEmptyBody,
+  validateBody(updateMembershipSchema),
+  authControllers.updateMembership
+);
 
 export default authRouter;

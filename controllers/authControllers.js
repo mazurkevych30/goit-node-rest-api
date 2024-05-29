@@ -65,9 +65,21 @@ const logout = async (req, res) => {
   res.status(204).json();
 };
 
+const updateMembership = async (req, res) => {
+  const { _id } = req.user;
+
+  const result = await authServises.updateUser({ _id }, req.body);
+
+  res.json({
+    email: result.email,
+    subscription: result.subscription,
+  });
+};
+
 export default {
   singup: ctrlWrapper(singup),
   singin: ctrlWrapper(singin),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateMembership: ctrlWrapper(updateMembership),
 };

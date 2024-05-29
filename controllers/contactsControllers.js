@@ -4,11 +4,21 @@ import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
-  const filter = { owner };
+  let filter = { owner };
   const fields = "-createdAt -updatedAt";
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, favorite } = req.query;
   const skip = (page - 1) * limit;
   const settings = { skip, limit };
+  if (favorite !== undefined) {
+    if ((favorite !== "" && favorite === "true") || favorite === "false") {
+      filter = {
+        ...filter,
+        favorite,
+      };
+    } else {
+      throw HttpError(404, "Favorite value must be true or false");
+    }
+  }
 
   const result = await contactsService.listContacts({
     filter,
