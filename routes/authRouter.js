@@ -5,11 +5,13 @@ import validateBody from "../decorators/validateBody.js";
 
 import isEmptyBody from "../middlewares/isEmptyBody.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 import {
   authSignupSchema,
   authSigninSchema,
   updateMembershipSchema,
+  updateAvatarSchema,
 } from "../schemas/authSchemas.js";
 
 const authRouter = express.Router();
@@ -38,6 +40,13 @@ authRouter.patch(
   isEmptyBody,
   validateBody(updateMembershipSchema),
   authControllers.updateMembership
+);
+
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatarURL"),
+  authControllers.updateAvatar
 );
 
 export default authRouter;

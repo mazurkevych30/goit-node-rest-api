@@ -19,3 +19,7 @@ export const updateMembershipSchema = Joi.object({
     .valid(...membershipTypeList)
     .required(),
 });
+
+export const updateAvatarSchema = Joi.object({
+  avatarURL: Joi.string().required(),
+});

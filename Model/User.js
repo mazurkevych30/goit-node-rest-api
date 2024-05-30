@@ -19,6 +19,9 @@ const userSchema = new Schema(
       enum: membershipTypeList,
       default: "starter",
     },
+    avatarURL: {
+      type: String,
+    },
     token: {
       type: String,
       default: null,

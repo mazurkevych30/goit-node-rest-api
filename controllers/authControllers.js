@@ -1,10 +1,17 @@
+import fs from "fs/promises";
+import path from "path";
+import Jimp from "jimp";
+
 import bcrypt from "bcrypt";
 import { createToken } from "../helpers/jwt.js";
 
 import * as authServises from "../services/authServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
-import { token } from "morgan";
+
+import gravatar from "gravatar";
+
+const avatarsPath = path.resolve("public", "avatars");
 
 const singup = async (req, res) => {
   const { email } = req.body;
@@ -13,7 +20,8 @@ const singup = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  const newUser = await authServises.addUser(req.body);
+  const avatarURL = gravatar.url(email, { s: 250 }, true);
+  const newUser = await authServises.addUser({ ...req.body, avatarURL });
 
   res.status(201).json({
     user: {
@@ -76,10 +84,30 @@ const updateMembership = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarsPath, filename);
+
+  Jimp.read(oldPath, (err, avatar) => {
+    if (err) HttpError(400);
+    avatar.resize(250, 250).write(oldPath);
+    fs.rename(oldPath, newPath);
+  });
+
+  const avatarURL = path.join("avatars", filename);
+  const result = await authServises.updateUser({ _id }, { avatarURL });
+
+  res.json({
+    avatarURL: result.avatarURL,
+  });
+};
+
 export default {
   singup: ctrlWrapper(singup),
   singin: ctrlWrapper(singin),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateMembership: ctrlWrapper(updateMembership),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
