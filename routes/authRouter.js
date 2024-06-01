@@ -11,7 +11,7 @@ import {
   authSignupSchema,
   authSigninSchema,
   updateMembershipSchema,
-  updateAvatarSchema,
+  authVerifySchema,
 } from "../schemas/authSchemas.js";
 
 const authRouter = express.Router();
@@ -21,6 +21,15 @@ authRouter.post(
   isEmptyBody,
   validateBody(authSignupSchema),
   authControllers.singup
+);
+
+authRouter.get("/verify/:verificationToken", authControllers.verify);
+
+authRouter.post(
+  "/verify",
+  isEmptyBody,
+  validateBody(authVerifySchema),
+  authControllers.resendVerify
 );
 
 authRouter.post(

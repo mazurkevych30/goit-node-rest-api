@@ -9,6 +9,10 @@ export const authSignupSchema = Joi.object({
     .default("starter"),
 });
 
+export const authVerifySchema = Joi.object({
+  email: Joi.string().required(),
+});
+
 export const authSigninSchema = Joi.object({
   password: Joi.string().required(),
   email: Joi.string().required(),
@@ -18,8 +22,4 @@ export const updateMembershipSchema = Joi.object({
   subscription: Joi.string()
     .valid(...membershipTypeList)
     .required(),
-});
-
-export const updateAvatarSchema = Joi.object({
-  avatarURL: Joi.string().required(),
 });
